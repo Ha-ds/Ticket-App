@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Railward — Book a train</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="app-header">
+    <div class="brand">
+      <span class="brand-mark">▮▮</span>
+      <span class="brand-name">Railward</span>
+    </div>
+    <ol class="stepper">
+      <li class="step is-active" data-step="1"><span class="step-num">1</span><span class="step-label">Route</span></li>
+      <li class="step" data-step="2"><span class="step-num">2</span><span class="step-label">Trains</span></li>
+      <li class="step" data-step="3"><span class="step-num">3</span><span class="step-label">Seat</span></li>
+      <li class="step" data-step="4"><span class="step-num">4</span><span class="step-label">Passenger</span></li>
+      <li class="step" data-step="5"><span class="step-num">5</span><span class="step-label">Payment</span></li>
+    </ol>
+  </header>
+
+  <main class="stage">
+
+    <!-- STEP 1: SEARCH -->
+      
+    <section class="panel is-active" id="panel-1" data-panel="1">
+      <h1 class="panel-title">Discover by rail</h1>
+      <div class="hero">
+        <img
+          src="hero.svg"
+          width="840" height="320"
+          alt="A passenger train crossing a stone viaduct at dusk, with mountains and a setting sun behind it">
+      </div>
+
+      <div class="search-card">
+        <div class="search-tabs">
+          <button type="button" class="tab is-active" data-tab="tickets">Tickets</button>
+          <button type="button" class="tab" data-tab="more">More options</button>
+          <button type="button" class="tab" data-tab="manage">Manage trip</button>
+        </div>
+
+        <form class="search-form" id="search-form">
+          <div class="row row-stations">
+            <div class="field field-icon">
+              <label for="origin"><span class="field-icon-glyph">▤</span> Departure from</label>
+              <select id="origin" required>
+                <option value="">Enter departure station</option>
+                <option>Sofia Central</option>
+                <option>Plovdiv</option>
+                <option>Varna</option>
+                <option>Burgas</option>
+              </select>
+            </div>
+
+            <button type="button" class="swap-btn" id="swap-stations" aria-label="Swap stations">⇄</button>
+
+            <div class="field field-icon">
+              <label for="destination"><span class="field-icon-glyph">▤</span> Arrival at</label>
+              <select id="destination" required>
+                <option value="">Enter arrival station</option>
+                <option>Sofia Central</option>
+                <option>Plovdiv</option>
+                <option>Varna</option>
+                <option>Burgas</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row row-date-passengers">
+            <div class="field field-icon field-split">
+              <div class="field-split-main">
+                <label for="depart-date"><span class="field-icon-glyph">▦</span> Departure date</label>
+                <input type="date" id="depart-date" required>
+              </div>
+              <div class="field-split-side">
+                <label for="depart-hour">Hour</label>
+                <input type="time" id="depart-hour" value="00:00">
+              </div>
+            </div>
+
+            <div class="field field-icon">
+              <label for="passengers"><span class="field-icon-glyph">◍</span> Passengers</label>
+              <select id="passengers">
+                <option>1 Adult</option>
+                <option>2 Adults</option>
+                <option>1 Adult, 1 Child</option>
+                <option>4 Adults</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary search-btn">Search</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- STEP 2: RESULTS -->
+    <section class="panel" id="panel-2" data-panel="2">
+      <div class="panel-head-row">
+        <div>
+          <h1 class="panel-title" id="route-heading">Available trains</h1>
+          <p class="panel-sub" id="route-sub">Choose a departure that works for you.</p>
+        </div>
+        <button class="btn-ghost" data-back="1">← Edit search</button>
+      </div>
+
+      <div class="ticket-list" id="ticket-list"><!-- rendered by JS --></div>
+    </section>
+
+    <!-- STEP 3: SEAT SELECTION -->
+    <section class="panel" id="panel-3" data-panel="3">
+      <div class="panel-head-row">
+        <div>
+          <h1 class="panel-title">Pick your seat</h1>
+          <p class="panel-sub" id="chosen-train-sub">Coach 3 · Standard class</p>
+        </div>
+        <button class="btn-ghost" data-back="2">← Back to trains</button>
+      </div>
+
+      <div class="seat-wrap">
+        <div class="coach">
+          <div class="coach-aisle-label">Front of coach</div>
+          <div class="seat-grid" id="seat-grid"><!-- rendered by JS --></div>
+        </div>
+
+        <aside class="seat-legend">
+          <p><span class="dot dot-free"></span> Available</p>
+          <p><span class="dot dot-taken"></span> Taken</p>
+          <p><span class="dot dot-selected"></span> Your pick</p>
+          <div class="seat-summary" id="seat-summary">No seat selected yet</div>
+          <button class="btn-primary" id="to-passenger-btn" disabled>Continue</button>
+        </aside>
+      </div>
+    </section>
+
+    <!-- STEP 4: PASSENGER INFO -->
+    <section class="panel" id="panel-4" data-panel="4">
+      <div class="panel-head-row">
+        <div>
+          <h1 class="panel-title">Passenger details</h1>
+          <p class="panel-sub">This name will be printed on the ticket.</p>
+        </div>
+        <button class="btn-ghost" data-back="3">← Back to seat</button>
+      </div>
+
+      <form class="passenger-form" id="passenger-form">
+        <div class="field">
+          <label for="full-name">Full name</label>
+          <input type="text" id="full-name" placeholder="As shown on your ID" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="you@example.com" required>
+        </div>
+        <div class="field">
+          <label for="phone">Phone</label>
+          <input type="tel" id="phone" placeholder="+359 88 123 4567">
+        </div>
+        <button type="submit" class="btn-primary">Continue to payment</button>
+      </form>
+    </section>
+
+    <!-- STEP 5: PAYMENT / CONFIRMATION -->
+    <section class="panel" id="panel-5" data-panel="5">
+      <div class="panel-head-row">
+        <div>
+          <h1 class="panel-title" id="payment-title">Payment</h1>
+          <p class="panel-sub" id="payment-sub">Review your trip and confirm.</p>
+        </div>
+        <button class="btn-ghost" data-back="4" id="payment-back-btn">← Back to details</button>
+      </div>
+
+      <div class="payment-layout" id="payment-view">
+        <form class="payment-form" id="payment-form">
+          <div class="field">
+            <label for="card-name">Name on card</label>
+            <input type="text" id="card-name" required>
+          </div>
+          <div class="field">
+            <label for="card-number">Card number</label>
+            <input type="text" id="card-number" placeholder="4242 4242 4242 4242" required>
+          </div>
+          <div class="two-col">
+            <div class="field">
+              <label for="card-exp">Expiry</label>
+              <input type="text" id="card-exp" placeholder="MM/YY" required>
+            </div>
+            <div class="field">
+              <label for="card-cvc">CVC</label>
+              <input type="text" id="card-cvc" placeholder="123" required>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary">Confirm and pay</button>
+        </form>
+
+        <div class="ticket-stub" id="summary-stub">
+          <div class="stub-row"><span>Route</span><strong id="stub-route">—</strong></div>
+          <div class="stub-row"><span>Date</span><strong id="stub-date">—</strong></div>
+          <div class="stub-row"><span>Train</span><strong id="stub-train">—</strong></div>
+          <div class="stub-row"><span>Seat</span><strong id="stub-seat">—</strong></div>
+          <div class="stub-perforation"></div>
+          <div class="stub-row stub-total"><span>Total</span><strong id="stub-total">—</strong></div>
+        </div>
+      </div>
+
+      <div class="confirmation" id="confirmation-view" hidden>
+        <div class="confirmation-mark">✓</div>
+        <h2>You're booked</h2>
+        <p>A confirmation and your ticket have been sent to <strong id="confirm-email"></strong>.</p>
+        <div class="ticket-stub" id="final-stub"></div>
+        <button class="btn-ghost" id="restart-btn">Book another trip</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
